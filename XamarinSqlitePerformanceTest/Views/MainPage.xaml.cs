@@ -24,8 +24,14 @@ namespace XamarinSqlitePerformanceTest.Views
             base.OnAppearing();
             await _viewModel.OnAppearing();
 
+            System.Diagnostics.Debug.WriteLine($"[{DateTime.Now}] Select Start.");
+
+            var persions = App.Database.GetPersons();
+
+            System.Diagnostics.Debug.WriteLine($"[{DateTime.Now}] Select End.");
+
             // TODO: ViewModel
-            listView.ItemsSource = await App.Database.GetPersonsAsync();
+            listView.ItemsSource = persions;
         }
     }
 }

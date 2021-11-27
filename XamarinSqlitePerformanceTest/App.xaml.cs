@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
+﻿using Xamarin.Forms;
 using XamarinSqlitePerformanceTest.Databases;
 using XamarinSqlitePerformanceTest.Views;
 
@@ -17,7 +14,7 @@ namespace XamarinSqlitePerformanceTest
             {
                 if (database == null)
                 {
-                    database = new SqliteDatabase(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "test.db3"));
+                    database = new SqliteDatabase();
                 }
                 return database;
             }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
@@ -9,6 +10,8 @@ namespace UseSQLite.ViewModels
 {
     public class MainViewModel
     {
+        private static Random _random = new Random();
+
         public ICommand AddCommand { get; set; }
 
         //public ICommand ListTappedCommand { get; set; }
@@ -26,15 +29,26 @@ namespace UseSQLite.ViewModels
 
         public async Task OnAppearing()
         {
-            var p = new Person()
-            {
-                Name = "Test01",
-                Age = 20,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
-            };
+            System.Diagnostics.Debug.WriteLine($"[{DateTime.Now}] Insert Start.");
 
-            await App.Database.SavePersonAsync(p);
+            var insertPersions = new List<Person>();
+
+            for (var i = 1; i <= 1000; i++)
+            {
+                var p = new Person()
+                {
+                    Name = Guid.NewGuid().ToString(),
+                    Age = _random.Next(10, 100),
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
+                };
+                insertPersions.Add(p);
+            }
+
+            App.Database.SavePersons(insertPersions);
+
+
+            System.Diagnostics.Debug.WriteLine($"[{DateTime.Now}] Insert End.");
         }
 
         private async Task Add()
