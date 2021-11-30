@@ -1,7 +1,7 @@
 ﻿using System;
 using SQLite;
 
-namespace XamarinSqlitePerformanceTest.Databases
+namespace XamarinSqlitePerformanceTest.Databases.Entities
 {
     public class Person
     {

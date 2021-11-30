@@ -1,18 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
+using System.Linq;
+using System.Linq.Expressions;
 using SQLite;
+using XamarinSqlitePerformanceTest.Databases.Entities;
 
 namespace XamarinSqlitePerformanceTest.Databases
 {
-    public class SqliteDatabase
+    public class SqliteDatabase : IDatabase
     {
-        private readonly SQLiteConnection _sqlite;
+        private SQLiteConnection _sqlite;
+
+        private bool _isInTransaction
+        {
+            get { return _sqlite.IsInTransaction; }
+        }
 
         public SqliteDatabase()
         {
-            var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "test.db3");
+            var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "test.db3");
 
             _sqlite = new SQLiteConnection(dbPath);
 
@@ -61,41 +68,117 @@ namespace XamarinSqlitePerformanceTest.Databases
             return _sqlite.Delete(person);
         }
 
+        // ===================================================================
 
-        //private readonly SQLiteAsyncConnection _database;
+        public void Dispose()
+        {
+            _sqlite.Dispose();
+            _sqlite = null;
+        }
 
-        //public SqliteDatabase(string dbPath)
-        //{
-        //    _database = new SQLiteAsyncConnection(dbPath);
+        public void BeginTransaction()
+        {
+            while (_sqlite.IsInTransaction)
+            {
+                //他のトランザクションが終了するまで待機する
+            }
 
-        //    _database.CreateTableAsync<Person>().Wait();
-        //}
+            _sqlite.BeginTransaction();
+        }
 
-        //public Task<List<Person>> GetPersonsAsync()
-        //{
-        //    return _database.Table<Person>().ToListAsync();
-        //}
+        public void RollBack()
+        {
+            if (_isInTransaction)
+            {
+                _sqlite.Rollback();
+            }
+        }
 
-        //public Task<Person> GetPersonAsync(int id)
-        //{
-        //    return _database.Table<Person>().Where(i => i.ID == id).FirstOrDefaultAsync();
-        //}
+        public void Commit()
+        {
+            _sqlite.Commit();
+        }
 
-        //public Task<int> SavePersonAsync(Person person)
-        //{
-        //    if (person.ID != 0)
-        //    {
-        //        return _database.UpdateAsync(person);
-        //    }
-        //    else
-        //    {
-        //        return _database.InsertAsync(person);
-        //    }
-        //}
+        public void CreateTable<T>()
+        {
+            var result = _sqlite.CreateTable<T>();
+        }
 
-        //public Task<int> DeletePersonAsync(Person person)
-        //{
-        //    return _database.DeleteAsync(person);
-        //}
+        public void DropTable<T>()
+        {
+            var result = _sqlite.DropTable<T>();
+        }
+
+        public void Insert<T>(T insertData)
+        {
+            _sqlite.Insert(insertData);
+        }
+
+        public void Insert<T>(IEnumerable<T> insertData)
+        {
+            _sqlite.InsertAll(insertData);
+        }
+
+        public IEnumerable<T> Select<T>() where T : new()
+        {
+            var result = _sqlite.Table<T>();
+            return result;
+        }
+
+        public IEnumerable<T> Select<T>(Expression<Func<T, bool>> filter) where T : new()
+        {
+            var result = _sqlite.Table<T>().Where(filter);
+            return result;
+        }
+
+        public IEnumerable<T> Select<T>(List<Expression<Func<T, bool>>> filters) where T : new()
+        {
+            if (!filters.Any())
+            {
+                return _sqlite.Table<T>();
+            }
+
+            var tempFilters = new List<Expression<Func<T, bool>>>(filters);
+            var first = tempFilters.First();
+            TableQuery<T> result = _sqlite.Table<T>().Where(first);
+            tempFilters.Remove(first);
+            foreach (var filter in tempFilters)
+            {
+                result = result.Where(filter);
+            }
+
+            return result;
+        }
+
+        public int Update<T>(T updateData)
+        {
+            return _sqlite.Update(updateData);
+        }
+
+        public int Update<T>(IEnumerable<T> updateData)
+        {
+            return _sqlite.UpdateAll(updateData);
+        }
+
+        public int Delete<T>(T deleteData)
+        {
+            return _sqlite.Delete(deleteData);
+        }
+
+        public int DeleteAll<T>()
+        {
+            return _sqlite.DeleteAll<T>();
+        }
+
+        public int Delete<T>(Expression<Func<T, bool>> filter) where T : new()
+        {
+            int result = 0;
+            var targets = Select(filter);
+            foreach (var target in targets)
+            {
+                result += Delete<T>(target);
+            }
+            return result;
+        }
     }
 }

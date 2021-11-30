@@ -20,11 +20,13 @@
     <None Remove="Views\" />
     <None Remove="ViewModels\" />
     <None Remove="Databases\" />
+    <None Remove="Databases\Entities\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\" />
     <Folder Include="ViewModels\" />
     <Folder Include="Databases\" />
+    <Folder Include="Databases\Entities\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Views\MainPage.xaml.cs">

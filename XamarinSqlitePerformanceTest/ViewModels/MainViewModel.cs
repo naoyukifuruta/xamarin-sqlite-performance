@@ -5,6 +5,7 @@ using System.Windows.Input;
 using Xamarin.Forms;
 using XamarinSqlitePerformanceTest;
 using XamarinSqlitePerformanceTest.Databases;
+using XamarinSqlitePerformanceTest.Databases.Entities;
 
 namespace UseSQLite.ViewModels
 {
