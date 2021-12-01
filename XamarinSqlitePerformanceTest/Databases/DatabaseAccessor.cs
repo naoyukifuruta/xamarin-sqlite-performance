@@ -77,5 +77,10 @@ namespace XamarinSqlitePerformanceTest.Databases
         {
             return _db.Delete(person);
         }
+
+        public int DeletePersons()
+        {
+            return _db.DeleteAll<Person>();
+        }
     }
 }

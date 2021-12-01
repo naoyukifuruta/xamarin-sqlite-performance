@@ -5,25 +5,47 @@
     x:Class="XamarinSqlitePerformanceTest.Views.MainPage"
     Title="SQLite Performance Test">
 
-    <ContentPage.Resources>
-        <!-- Implicit styles -->
+    <!--<ContentPage.Resources>
+         Implicit styles 
         <Style TargetType="{x:Type ListView}">
             <Setter Property="BackgroundColor" Value="{StaticResource AppBackgroundColor}" />
         </Style>
-    </ContentPage.Resources>
+    </ContentPage.Resources>-->
 
     <ContentPage.ToolbarItems>
         <!--<ToolbarItem Text="+" Command="{Binding AddCommand}" />-->
     </ContentPage.ToolbarItems>
 
-    <ListView
-        Margin="{StaticResource PageMargin}"
-        CachingStrategy="RecycleElement"
-        ItemsSource="{Binding Persons}" >
-        <ListView.ItemTemplate>
-            <DataTemplate>
-                <TextCell Text="{Binding Name}" TextColor="Black" Detail="{Binding Age}" />
-            </DataTemplate>
-        </ListView.ItemTemplate>
-    </ListView>
+    <StackLayout
+        Orientation="Vertical"
+        HorizontalOptions="FillAndExpand" >
+        <StackLayout
+            Orientation="Horizontal"
+            HeightRequest="24"
+            BackgroundColor="LightGray"
+            HorizontalOptions="FillAndExpand" >
+            <Label
+                Text="{Binding Count}"
+                FontSize="12"
+                TextColor="Black"
+                HorizontalOptions="EndAndExpand"
+                VerticalOptions="Center"
+                VerticalTextAlignment="Center"
+                BackgroundColor="LightGray"
+                Margin="0,4,8,0" />
+        </StackLayout>
+        <ListView
+            CachingStrategy="RecycleElement"
+            ItemsSource="{Binding Persons}" >
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell
+                        Text="{Binding Name}"
+                        TextColor="Black"
+                        Detail="{Binding Age}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+
 </ContentPage>
