@@ -23,12 +23,14 @@
     <None Remove="Databases\" />
     <None Remove="Databases\Entities\" />
     <None Remove="Acr.UserDialogs" />
+    <None Remove="Common\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\" />
     <Folder Include="ViewModels\" />
     <Folder Include="Databases\" />
     <Folder Include="Databases\Entities\" />
+    <Folder Include="Common\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Views\MainPage.xaml.cs">

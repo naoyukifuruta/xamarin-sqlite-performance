@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Acr.UserDialogs;
 using Xamarin.Forms;
 using XamarinSqlitePerformanceTest;
 using XamarinSqlitePerformanceTest.Databases;
@@ -35,40 +36,43 @@ namespace UseSQLite.ViewModels
 
         public async Task OnAppearing()
         {
-            using (var db = DatabaseAccessorFactory.Create())
+            using (UserDialogs.Instance.Loading(""))
             {
-                System.Diagnostics.Debug.WriteLine($"[{DateTime.Now}] Insert Start.");
-
-                var insertPersions = new List<Person>();
-
-                for (var i = 1; i <= 1000; i++)
+                using (var db = DatabaseAccessorFactory.Create())
                 {
-                    var p = new Person()
+                    System.Diagnostics.Debug.WriteLine($"[{DateTime.Now}] Insert Start.");
+
+                    var insertPersions = new List<Person>();
+
+                    for (var i = 1; i <= 1000; i++)
                     {
-                        Name = Guid.NewGuid().ToString(),
-                        Age = _random.Next(10, 100),
-                        CreatedAt = DateTime.Now,
-                        UpdatedAt = DateTime.Now,
-                    };
-                    insertPersions.Add(p);
+                        var p = new Person()
+                        {
+                            Name = Guid.NewGuid().ToString(),
+                            Age = _random.Next(10, 100),
+                            CreatedAt = DateTime.Now,
+                            UpdatedAt = DateTime.Now,
+                        };
+                        insertPersions.Add(p);
+                    }
+
+                    db.SavePersons(insertPersions);
+
+                    System.Diagnostics.Debug.WriteLine($"[{DateTime.Now}] Insert End.");
+
+                    System.Diagnostics.Debug.WriteLine($"[{DateTime.Now}] Select Start.");
+
+                    var persons = db.GetPersons();
+
+                    System.Diagnostics.Debug.WriteLine($"[{DateTime.Now}] Select End.");
+
+                    var temps = new ObservableCollection<Person>();
+                    foreach (var p in persons)
+                    {
+                        temps.Add(p);
+                    }
+                    this.Persons = temps;
                 }
-
-                db.SavePersons(insertPersions);
-
-                System.Diagnostics.Debug.WriteLine($"[{DateTime.Now}] Insert End.");
-
-                System.Diagnostics.Debug.WriteLine($"[{DateTime.Now}] Select Start.");
-
-                var persons = db.GetPersons();
-
-                System.Diagnostics.Debug.WriteLine($"[{DateTime.Now}] Select End.");
-
-                var temps = new ObservableCollection<Person>();
-                foreach (var p in persons)
-                {
-                    temps.Add(p);
-                }
-                this.Persons = temps;
             }
         }
     }

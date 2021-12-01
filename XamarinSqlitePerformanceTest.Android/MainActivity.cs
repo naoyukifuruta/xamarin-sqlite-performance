@@ -14,6 +14,8 @@ namespace XamarinSqlitePerformanceTest.Droid
         {
             base.OnCreate(savedInstanceState);
 
+            Acr.UserDialogs.UserDialogs.Init(this);
+
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             LoadApplication(new App());
