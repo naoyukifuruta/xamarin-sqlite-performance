@@ -26,50 +26,6 @@ namespace XamarinSqlitePerformanceTest.Databases
             _sqlite.CreateTable<Person>();
         }
 
-        public List<Person> GetPersons()
-        {
-            return _sqlite.Table<Person>().ToList();
-        }
-
-        public Person GetPerson(int id)
-        {
-            return _sqlite.Table<Person>().Where(i => i.ID == id).FirstOrDefault();
-        }
-
-        public int SavePerson(Person person)
-        {
-            if (person.ID != 0)
-            {
-                return _sqlite.Update(person);
-            }
-            else
-            {
-                return _sqlite.Insert(person);
-            }
-        }
-
-        public void SavePersons(List<Person> persons)
-        {
-            foreach (var person in persons)
-            {
-                if (person.ID != 0)
-                {
-                    _sqlite.Update(person);
-                }
-                else
-                {
-                    _sqlite.Insert(person);
-                }
-            }
-        }
-
-        public int DeletePerson(Person person)
-        {
-            return _sqlite.Delete(person);
-        }
-
-        // ===================================================================
-
         public void Dispose()
         {
             _sqlite.Dispose();

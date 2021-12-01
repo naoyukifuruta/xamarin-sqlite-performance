@@ -14,6 +14,7 @@
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2244" />
     <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
+    <PackageReference Include="Acr.UserDialogs" Version="7.2.0.534" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="sqlite-net-pcl" />
@@ -21,6 +22,7 @@
     <None Remove="ViewModels\" />
     <None Remove="Databases\" />
     <None Remove="Databases\Entities\" />
+    <None Remove="Acr.UserDialogs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\" />

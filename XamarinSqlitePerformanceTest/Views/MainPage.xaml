@@ -13,10 +13,13 @@
     </ContentPage.Resources>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="+" Command="{Binding AddCommand}" />
+        <!--<ToolbarItem Text="+" Command="{Binding AddCommand}" />-->
     </ContentPage.ToolbarItems>
 
-    <ListView x:Name="listView" Margin="{StaticResource PageMargin}" >
+    <ListView
+        Margin="{StaticResource PageMargin}"
+        CachingStrategy="RecycleElement"
+        ItemsSource="{Binding Persons}" >
         <ListView.ItemTemplate>
             <DataTemplate>
                 <TextCell Text="{Binding Name}" TextColor="Black" Detail="{Binding Age}" />

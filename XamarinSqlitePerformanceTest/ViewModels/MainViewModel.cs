@@ -1,71 +1,75 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 using XamarinSqlitePerformanceTest;
 using XamarinSqlitePerformanceTest.Databases;
 using XamarinSqlitePerformanceTest.Databases.Entities;
+using XamarinSqlitePerformanceTest.ViewModels;
 
 namespace UseSQLite.ViewModels
 {
-    public class MainViewModel
+    public class MainViewModel : BaseViewModel
     {
         private static Random _random = new Random();
 
-        public ICommand AddCommand { get; set; }
-
-        //public ICommand ListTappedCommand { get; set; }
-
         private INavigation _navigation;
+
+        private ObservableCollection<Person> _persons;
+        public ObservableCollection<Person> Persons
+        {
+            get { return _persons; }
+            set
+            {
+                _persons = value;
+                OnPropertyChanged(nameof(Persons));
+            }
+        }
 
         public MainViewModel(INavigation navigation)
         {
             _navigation = navigation;
-
-            AddCommand = new Command(async () => await Add());
-
-            //ListTappedCommand = new Command<Note>(async (note) => await TapListViewItem(note));
         }
 
         public async Task OnAppearing()
         {
-            System.Diagnostics.Debug.WriteLine($"[{DateTime.Now}] Insert Start.");
-
-            var insertPersions = new List<Person>();
-
-            for (var i = 1; i <= 1000; i++)
+            using (var db = DatabaseAccessorFactory.Create())
             {
-                var p = new Person()
+                System.Diagnostics.Debug.WriteLine($"[{DateTime.Now}] Insert Start.");
+
+                var insertPersions = new List<Person>();
+
+                for (var i = 1; i <= 1000; i++)
                 {
-                    Name = Guid.NewGuid().ToString(),
-                    Age = _random.Next(10, 100),
-                    CreatedAt = DateTime.Now,
-                    UpdatedAt = DateTime.Now,
-                };
-                insertPersions.Add(p);
+                    var p = new Person()
+                    {
+                        Name = Guid.NewGuid().ToString(),
+                        Age = _random.Next(10, 100),
+                        CreatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now,
+                    };
+                    insertPersions.Add(p);
+                }
+
+                db.SavePersons(insertPersions);
+
+                System.Diagnostics.Debug.WriteLine($"[{DateTime.Now}] Insert End.");
+
+                System.Diagnostics.Debug.WriteLine($"[{DateTime.Now}] Select Start.");
+
+                var persons = db.GetPersons();
+
+                System.Diagnostics.Debug.WriteLine($"[{DateTime.Now}] Select End.");
+
+                var temps = new ObservableCollection<Person>();
+                foreach (var p in persons)
+                {
+                    temps.Add(p);
+                }
+                this.Persons = temps;
             }
-
-            App.Database.SavePersons(insertPersions);
-
-
-            System.Diagnostics.Debug.WriteLine($"[{DateTime.Now}] Insert End.");
         }
-
-        private async Task Add()
-        {
-            //await _navigation.PushAsync(new NoteEntryPage
-            //{
-            //    BindingContext = new Note()
-            //});
-        }
-
-        //private async Task TapListViewItem(Note note)
-        //{
-        //    await _navigation.PushAsync(new NoteEntryPage
-        //    {
-        //        BindingContext = note
-        //    });
-        //}
     }
 }

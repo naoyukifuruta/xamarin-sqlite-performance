@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
+using XamarinSqlitePerformanceTest.Databases.Entities;
 
 namespace XamarinSqlitePerformanceTest.Databases
 {
-    public class DatabaseAccessor : IDatabase
+    public class DatabaseAccessor : IDisposable
     {
         private IDatabase _db;
 
@@ -34,64 +34,48 @@ namespace XamarinSqlitePerformanceTest.Databases
             _db.Commit();
         }
 
-        public void CreateTable<T>()
+        // Person
+
+        public List<Person> GetPersons()
         {
-            throw new NotImplementedException();
+            return _db.Select<Person>().ToList();
         }
 
-        public void DropTable<T>()
+        public Person GetPerson(int id)
         {
-            throw new NotImplementedException();
+            return _db.Select<Person>().Where(i => i.ID == id).FirstOrDefault();
         }
 
-        public void Insert<T>(T insertData)
+        public void SavePerson(Person person)
         {
-            throw new NotImplementedException();
+            if (person.ID != 0)
+            {
+                _db.Update(person);
+            }
+            else
+            {
+                _db.Insert(person);
+            }
         }
 
-        public void Insert<T>(IEnumerable<T> insertData)
+        public void SavePersons(List<Person> persons)
         {
-            throw new NotImplementedException();
+            foreach (var person in persons)
+            {
+                if (person.ID != 0)
+                {
+                    _db.Update(person);
+                }
+                else
+                {
+                    _db.Insert(person);
+                }
+            }
         }
 
-        public IEnumerable<T> Select<T>() where T : new()
+        public int DeletePerson(Person person)
         {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<T> Select<T>(Expression<Func<T, bool>> filter) where T : new()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<T> Select<T>(List<Expression<Func<T, bool>>> filter) where T : new()
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Update<T>(T updateData)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Update<T>(IEnumerable<T> updateData)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Delete<T>(T deleteData)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int DeleteAll<T>()
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Delete<T>(Expression<Func<T, bool>> filter) where T : new()
-        {
-            throw new NotImplementedException();
+            return _db.Delete(person);
         }
     }
 }
