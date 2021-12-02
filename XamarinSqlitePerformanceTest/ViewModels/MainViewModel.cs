@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using Acr.UserDialogs;
-using Xamarin.Forms;
-using XamarinSqlitePerformanceTest;
 using XamarinSqlitePerformanceTest.Databases;
 using XamarinSqlitePerformanceTest.Databases.Entities;
 using XamarinSqlitePerformanceTest.ViewModels;
@@ -15,8 +12,6 @@ namespace UseSQLite.ViewModels
     public class MainViewModel : BaseViewModel
     {
         private static Random _random = new Random();
-
-        private INavigation _navigation;
 
         private ObservableCollection<Person> _persons;
         public ObservableCollection<Person> Persons
@@ -40,10 +35,7 @@ namespace UseSQLite.ViewModels
             }
         }
 
-        public MainViewModel(INavigation navigation)
-        {
-            _navigation = navigation;
-        }
+        public MainViewModel() { }
 
         public async Task OnAppearing()
         {

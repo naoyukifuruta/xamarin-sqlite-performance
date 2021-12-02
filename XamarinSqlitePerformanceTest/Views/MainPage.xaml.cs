@@ -13,7 +13,7 @@ namespace XamarinSqlitePerformanceTest.Views
         public MainPage()
         {
             InitializeComponent();
-            BindingContext = _viewModel = new MainViewModel(this.Navigation);
+            BindingContext = _viewModel = new MainViewModel();
         }
 
         protected override void OnAppearing()
